@@ -1,0 +1,267 @@
+---
+# IMPORTANT: Change settings here, but DO NOT change the spacing.
+# Remove comments and add values where applicable.
+# The descriptions below should be self-explanatory
+
+title: "Russia - Ukraine Conflict"
+#subtitle: "This will appear as Right Header"
+
+documentclass: "elsarticle"
+
+# --------- Thesis title (Optional - set to FALSE by default).
+# You can move the details below around as you please.
+Thesis_FP: FALSE
+# Entry1: "An unbelievable study with a title spanning multiple lines."
+# Entry2: "\\textbf{Some Guy}" # textbf for bold
+# Entry3: "A thesis submitted toward the degree of Doctor of Philosophy"
+# Uni_Logo: Tex/Logo.png # Place a logo in the indicated location (from your root, e.g. defaults to ~/Tex/Logo.png) and uncomment this line. Leave uncommented for no image
+# Logo_width: 0.3 # If using a logo - use this to set width (size) of image
+# Entry4: "Under the supervision of: \\vfill Prof. Joe Smith and Dr. Frank Smith"
+# Entry5: "Stellenbosch University"
+# Entry6: April 2020
+# Entry7:
+# Entry8:
+
+# --------- Front Page
+# Comment: ----- Follow this pattern for up to 5 authors
+AddTitle: TRUE # Use FALSE when submitting to peer reviewed platform. This will remove author names.
+Author1: "Gaby Jacobs^[__Contributions:__  \\newline _The authors would like to thank no institution for money donated to this project. Thank you sincerely._]"  # First Author - note the thanks message displayed as an italic footnote of first page.
+Ref1: "Stellenbosch University, Stellenbosch, South Africa" # First Author's Affiliation
+Email1: "23658045@sun.ac.za" # First Author's Email address
+
+CorrespAuthor_1: TRUE  # If corresponding author is author 3, e.g., use CorrespAuthor_3: TRUE
+
+# Comment out below to remove both. JEL Codes only given if keywords also given.
+keywords: "Multivariate GARCH \\sep Kalman Filter \\sep Copula" # Use \\sep to separate
+JELCodes: "L250 \\sep L100"
+
+# ----- Manage headers and footers:
+#BottomLFooter: $Title$
+#BottomCFooter:
+#TopLHeader: \leftmark # Adds section name at topleft. Remove comment to add it.
+BottomRFooter: "\\footnotesize Page \\thepage" # Add a '#' before this line to remove footer.
+addtoprule: TRUE
+addfootrule: TRUE               # Use if footers added. Add '#' to remove line.
+
+# --------- page margins:
+margin: 2.3 # Sides
+bottom: 2 # bottom
+top: 2.5 # Top
+HardSet_layout: TRUE # Hard-set the spacing of words in your document. This will stop LaTeX squashing text to fit on pages, e.g.
+# This is done by hard-setting the spacing dimensions. Set to FALSE if you want LaTeX to optimize this for your paper.
+
+# --------- Line numbers
+linenumbers: FALSE # Used when submitting to journal
+
+# ---------- References settings:
+# You can download cls format here: https://www.zotero.org/ - simply search for your institution. You can also edit and save cls formats here: https://editor.citationstyles.org/about/
+# Hit download, store it in Tex/ folder, and change reference below - easy.
+bibliography: Tex/ref.bib       # Do not edit: Keep this naming convention and location.
+csl: Tex/harvard-stellenbosch-university.csl # referencing format used.
+# By default, the bibliography only displays the cited references. If you want to change this, you can comment out one of the following:
+#nocite: '@*' # Add all items in bibliography, whether cited or not
+# nocite: |  # add specific references that aren't cited
+#  @grinold2000
+#  @Someoneelse2010
+
+# ---------- General:
+RemovePreprintSubmittedTo: TRUE  # Removes the 'preprint submitted to...' at bottom of titlepage
+Journal: "Journal of Finance"   # Journal that the paper will be submitting to, if RemovePreprintSubmittedTo is set to TRUE.
+toc: FALSE                       # Add a table of contents
+numbersections: TRUE             # Should sections (and thus figures and tables) be numbered?
+fontsize: 11pt                  # Set fontsize
+linestretch: 1.2                # Set distance between lines.
+link-citations: TRUE            # This creates dynamic links to the papers in reference list.
+
+### Adding additional latex packages:
+# header-includes:
+#    - \usepackage{colortbl} # Add additional packages here.
+
+output:
+  pdf_document:
+    keep_tex: TRUE
+    template: Tex/TexDefault.txt
+    fig_width: 3.5 # Adjust default figure sizes. This can also be done in the chunks of the text.
+    fig_height: 3.5
+abstract: |
+  Remember to write a short summary about question.
+---
+
+<!-- First: Set your default preferences for chunk options: -->
+
+<!-- If you want a chunk's code to be printed, set echo = TRUE. message = FALSE stops R printing ugly package loading details in your final paper too. I also suggest setting warning = FALSE and checking for warnings in R, else you might find ugly warnings in your paper. -->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 5, fig.pos="H", fig.pos = 'H')
+
+# loading the data
+if(!require("tidyverse")) install.packages("tidyverse")
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+alloc <- read.csv("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question3/data/Ukraine_Aid/Financial Allocations.csv")
+commit <- read.csv("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question3/data/Ukraine_Aid/Financial Commitments.csv")
+ #prepare data for functions
+colnames(alloc)
+names(alloc)[2] <- 'EU'
+names(alloc)[3] <- 'fin_alloc'
+names(alloc)[4] <- 'hum_alloc'
+names(alloc)[5] <- 'mil_alloc'
+names(alloc)[6] <- 'tot_bil_alloc'
+names(alloc)[7] <- 'EU_share_alloc'
+colnames(alloc)
+
+
+
+```
+
+
+<!-- ############################## -->
+<!-- # Start Writing here: -->
+<!-- ############################## -->
+
+# Introduction \label{Introduction}
+
+The Russian-Ukraine Conflict has been ongoing since February 2014. Russia have invaded some of the major cities in Ukraine such as Kyiv and surrounding areas of Mariupol. There has been immense pressure on countries to support Ukraine in the form of country aid. The pressure was immensely focused on European countries especially since the location of the war and the historical context of the conflict. 
+I will be giving insight into which countries are giving aid to Ukraine, and how much. The focus will mostly be on European countries. 
+
+The two datasets used are Financial Allocations and Financial Commitments of countries that are giving to the Ukranian cause. The monetary values are all in dollar terms and billions. Both datasets include the country and a boolean variable indicating if the country is an EU member. 
+The Financial Allocations dataset variables:
+        +Financial allocations: this gives a broad overview of overall support in monetary terms to Ukraine.
+        +Humanitarrian allocations: This shows the allocations designated for humanitarian aid such as food, shelter and medical assistance. 
+        +Military allocations: This shows the allocations designated for military aid and reflects the extent of military support provided by the country. 
+        +Total bilateral allocation: This is the sum of all bilateral allocations and show the direct support/aid from one country to another. 
+        +Share in EU allocations: This variable allows us to assess  each EU member's relative contribution to total EU allocations. 
+The Financial Commitments dataset variables: 
+        +GDP in 2021: Gross Domestic Product of the country in 2021.
+        +Financial commitments: total financial commitments by the country. This can promised support for the future as well. 
+        +Humanitarian commitment: portion of commitments designated for humanitarian purposes. 
+        +Military commitments: portion of commitments designated for military purposes. 
+        +Total bilateral commitments: sum of bilateral commitments.
+        +Share in EU commitments: country's share in EU commitments. This shows the promised support relative to other EU countries. 
+        +Specific weapons and equipment: The financial value of specific military equipments and weapons committed. This provides some detail on the type of military aid given/promised. 
+        +Financial commitments with military purposes:
+        +Total bilateral commitments of short term: Commitments with short-term horizon. 
+
+# Data and Methodology
+In this section I will visually show who is giving aid to Ukraine and who is not. Here I will show all plots.
+The plots and any other data wrangling will be done in seperate functions. 
+First, I show the total bilateral contribution by country
+
+
+```{r Figure 1,  warning =  FALSE, fig.align = 'center', fig.cap = "Total Bilateral Allocations by Country \\label{Figure1}", fig.ext = 'png', fig.height = 3, fig.width = 6}
+g <- 
+    Contribution_by_country_plot(alloc)
+g
+```
+
+Here, I show the contribution of EU members and non-EU members. Using the map package I showcase where the countries are that are giving aid to Ukraine. 
+
+```{r Figure1,  warning =  FALSE, fig.align = 'center', fig.cap = " \\label{Figure1}", fig.ext = 'png', fig.height = 3, fig.width = 6}
+world <- map_data("world")
+europe <- subset(world, region %in% c("Albania", "Andorra", "Armenia", "Austria", "Azerbaijan",
+                                      "Belarus", "Belgium", "Bosnia and Herzegovina", "Bulgaria",
+                                      "Croatia", "Cyprus", "Czechia","Denmark","Estonia","Finland", 
+                                      "France","Georgia", "Germany", "Greece","Hungary","Iceland", 
+                                      "Ireland", "Italy","Kazakhstan", "Kosovo", "Latvia","Liechtenstein", 
+                                      "Lithuania", "Luxembourg","Malta","Moldova","Monaco","Montenegro",
+                                      "Macedonia", "Netherlands","Norway","Poland","Portugal","Romania",
+                                      "Russia","San Marino","Serbia","Slovakia","Slovenia","Spain",
+                                      "Sweden","Switzerland","Turkey","Ukraine","UK","Vatican"))
+ggplot(data = europe, aes(x = long, y = lat, group = group)) + 
+  geom_polygon(fill = "white", color = "black") +
+  theme_void() +
+    coord_fixed(ratio=1.6, xlim = c(-50, 80))
+ EU <- alloc %>% filter(EU==1) %>% arrange(tot_bil_alloc)
+EU_members <- subset(world, region %in% EU$Country)
+
+
+
+
+ggplot(data = europe, aes(x = long, y = lat, group = group)) + 
+  geom_polygon(data = europe, fill = "white", color = "black") +
+  geom_polygon(data = EU_members, fill = "red", color = "black") +
+  coord_fixed(ratio=1.6, xlim = c(-50, 80)) + 
+  theme_void() 
+library(sf)
+
+ world %>% 
+  # join map dataframe with values tabl
+ left_join(europe, by = join_by(region == Country)) %>% 
+ggplot(aes(long, lat)) +
+  geom_polygon(aes(group = group, fill = tot_bil_alloc), color ="grey80") +
+  scale_fill_gradient(low = "white", 
+                      high = "darkgreen", 
+                      limits = c(0,40), 
+                      na.value = "grey99") +
+  coord_sf() +
+  theme_bw()
+europe_map_data <- europe %>%
+  left_join(EU, by = join_by(region == Country))
+ 
+ ggplot(europe_map_data) +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = tot_bil_alloc), color = "grey80") +
+  scale_fill_gradient(low = "white", high = "darkgreen", limits = c(0, 35), na.value = "grey99") +
+  coord_sf() +
+    # coord_fixed(ratio=1.6, xlim = c(-50, 80))+
+     coord_sf(xlim = c(-25, 45), ylim = c(34, 72), expand = FALSE) + 
+  theme_bw() +
+  labs(title = "Financial Allocations in Europe",
+       fill = "Total Bilateral Allocations")
+
+ #function isn't working but the other maps are working
+ g <- allocation_map(data = alloc, alloc_var = alloc$tot_bil_alloc, Title = "Total Bilateral Allocations")
+ g
+
+```
+
+To make your graphs look extra nice in latex world, you could use Tikz device. Replace dev - 'png' with 'tikz' in the chunk below. Notice this makes the build time longer and produces extra tex files - so if you are comfortable with this, set your device to Tikz and try it out:
+
+```{r Figure2, warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure2}", fig.height = 3, fig.width = 6, dev = 'png'}
+
+ExampleData <- read_rds( "data/Example_data.rds")
+
+source("code/Example_Plot_Scatter.R") # Load a function from your 'code' folder. This e.g. plots scatters to your own preferences.
+source( "code/Data_Create.R") #
+
+ExampleData <- Data_Create(N = 100) # Same as the ExampleData loaded above - this is just a function to create the stored data.
+
+g <- Example_Plot_Scatter(DataInput = ExampleData,
+                          X = "Height_Score",
+                          Y = "Weight_Score",
+                          Z = "Agility_Score",
+                          Theme = theme_bw(), # run ?ggthemes for other themes.
+                          Title = "", # I prefer to use the caption set above.
+                          Ylab = "Height",
+                          Xlab = "Lenght",
+                          LegendTitle = "Agility",
+                          TitleSize = 10,
+                          LabSize = 10)
+
+g
+
+# Although the functions above are really simple, the principle is simple: containing calculations and data wrangling in their own functions will make this template much cleaner and more manageable.
+# When you start working, delete these meaningless functions and replace with your own...
+
+```
+
+To reference the plot above, add a ``\\label'' after the caption in the chunk heading, as done above. Then reference the plot as such: As can be seen, Figures \ref{Figure1}  and \ref{Figure2} are excellent, with Figure \ref{Figure2} being particularly aesthetically pleasing due to its device setting of Tikz. The nice thing now is that it correctly numbers all your figures (and sections or tables) and will update if it moves. The links are also dynamic.
+
+# Lists
+
+To add lists, simply using the following notation
+
+* This is really simple
+
+    + Just note the spaces here - writing in R you have to sometimes be pedantic about spaces...
+
+* Note that Rmarkdown notation removes the pain of defining \LaTeX environments!
+
+# Conclusion
+
+I hope you find this template useful. Remember, stackoverflow is your friend - use it to find answers to questions. Feel free to write me a mail if you have any questions regarding the use of this package. To cite this package, simply type citation("Texevier") in Rstudio to get the citation for @Texevier (Note that uncited references in your bibtex file will not be included in References).
+
+
+\newpage
+
+

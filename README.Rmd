@@ -1,5 +1,23 @@
 ---
 title: "README"
-output: html_document
+ md_document:
+    variant: markdown_github
 date: "2024-06-18"
 ---
+#Purpose
+This is the document where I will be discussing what I did for each question for the Data Science Practical Exam. 
+
+
+#Question 1
+
+
+
+#Question 2
+
+
+
+#Question 3: Russia - Ukraine Conflict
+Some insights into the Russia-Ukraine war and specifically wheter countries inside the European Union has done enough to stem the tide of the war will be given in this section. I will provide a summary of a few key bullers to discuss around the topic of country aid. This will provide viewers with intuitive and interesting insights into which countries are giving to the Ukranian cause and which aren't. 
+
+
+
