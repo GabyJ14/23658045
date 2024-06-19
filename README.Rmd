@@ -19,5 +19,18 @@ This is the document where I will be discussing what I did for each question for
 #Question 3: Russia - Ukraine Conflict
 Some insights into the Russia-Ukraine war and specifically wheter countries inside the European Union has done enough to stem the tide of the war will be given in this section. I will provide a summary of a few key bullers to discuss around the topic of country aid. This will provide viewers with intuitive and interesting insights into which countries are giving to the Ukranian cause and which aren't. 
 
+I start by creating a folder for Questions 3. 
 
+
+```{r}
+Texevier::create_template(directory = "C:/Users/gabyd/Desktop/DataScience/Exam/23658045", template_name = "Question3")
+```
+#Question 4
+I start by creating a folder for Question 4. 
+
+
+```{r}
+Texevier::create_template(directory = "C:/Users/gabyd/Desktop/DataScience/Exam/23658045", template_name = "Question4")
+
+```
 
