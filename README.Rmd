@@ -11,6 +11,10 @@ This is the document where I will be discussing what I did for each question for
 #Question 1
 
 
+```{r}
+Texevier::create_template(directory = "C:/Users/gabyd/Desktop/DataScience/Exam/23658045", template_name = "Question1")
+```
+
 
 #Question 2
 
@@ -33,4 +37,22 @@ I start by creating a folder for Question 4.
 Texevier::create_template(directory = "C:/Users/gabyd/Desktop/DataScience/Exam/23658045", template_name = "Question4")
 
 ```
+
+#Question 5: SQL
+In this section I share my views on local inflation by constructing a Braaibroodjie index over a three-year period. The index contains data for white bread, cheddar, margarine, tomatoes, onions, salt and chutney. 
+
+
+```{r}
+
+Texevier::create_template(directory = "C:/Users/gabyd/Desktop/DataScience/Exam/23658045", template_name = "Question5")
+
+```
+
+
+
+
+
+
+
+
 
