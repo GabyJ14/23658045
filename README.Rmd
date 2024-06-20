@@ -7,7 +7,7 @@ output: html_document
 Gaby Jacobs 23658045
 This is the document where I will be discussing what I did for each question for the Data Science Practical Exam.
 *Please Note :) I am partially colour blind and work with a colour blind scheme package in R. This may lead to my plots having strange colours (as pointed out by my mom). I don't think the colour blind scheme will interfere with the plots that I made in this prac, but I just wanted to inform you, just in case. 
-
+I had many problems with knitting, at first it worked and then before submitting it didn't want to knit. 
 
 ```{r}
 library(pacman)
