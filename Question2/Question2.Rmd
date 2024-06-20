@@ -99,10 +99,23 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width 
 # These should be picked up when you execute the command chunks (code sections below) in your rmd, not printed in your paper!
 
 # Lets load in example data, and see how this can be stored and later called from your 'data' folder.
-if(!require("tidyverse")) install.packages("tidyverse")
+#if(!require("tidyverse")) install.packages("tidyverse")
 library(tidyverse)
 pacman::p_load(purr)
 pacman::p_load(lubridate)
+coldplay_data <- read.csv("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/data/Coldplay_vs_Metallica/Coldplay.csv")
+metallica_data <- read.csv("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/data/Coldplay_vs_Metallica/metallica.csv")
+definitions <- read_lines("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/data/Coldplay_vs_Metallica/Definitions.txt")
+spotify_df <- read_rds("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/data/Coldplay_vs_Metallica/Broader_Spotify_Info.rds")
+
+#some columns is not names the same
+colnames(metallica_data)[2] = "album_name"
+colnames(metallica_data)[3] ="duration"
+
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/code/direct_comparison_album_pop_plot.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/code/direct_comparison_energy_plot.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/code/direct_comparison_tempo_plot.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/code/song_duration_plot.R")
 
 ```
 
@@ -112,20 +125,12 @@ pacman::p_load(lubridate)
 <!-- ############################## -->
 
 # Introduction \label{Introduction}
-Explain what I will be doing in this section. 
+In this section I report on the longevity and musical progression of Coldplay and Metallica. 
 
 #Data Preparation
-load and inspect the data. Filter studio recording and live performances. 
+Filter studio recording and live performances. 
 
 ```{r}
-coldplay_data <- read.csv("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/data/Coldplay_vs_Metallica/Coldplay.csv")
-metallica_data <- read.csv("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/data/Coldplay_vs_Metallica/metallica.csv")
-definitions <- read_lines("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/data/Coldplay_vs_Metallica/Definitions.txt")
-spotify_df <- read_rds("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/data/Coldplay_vs_Metallica/Broader_Spotify_Info.rds")
-
-#some columns is not names the same
-colnames(metallica_data)[2] = "album_name"
-colnames(metallica_data)[3] ="duration"
 
 #filter out live performances for direct comparisons
 coldplay_direct_compare <- coldplay_data %>% 
@@ -146,35 +151,32 @@ combined_df <- combined_df %>%
 
 
 #Analysis
-Direct comparisons
-
-
+In this section I look at the direct comparisons of Coldplay and Metallica. I first look at the direct comparison of the average tempo of songs by band over the years. Figure * shows that the tempo for both Coldplay and Metallica varied a lot over the years. 
 
 ```{r}
 #tempo plot
 g <- direct_comparison_tempo_plot(combined_df)
 g
+```
+Next, I look at the direct comparison of energy over  time. Figure * shows that Metallica's energy has always been higher than Coldplay's. Neither bands' energy changed drastically over the years. 
+
+
+```{r}
 #energy plot
 h <- direct_comparison_energy_plot(combined_df)
 h
+```
+For the last direct comparison, I look at the popularity of the albums of both Coldplay and Metallica. As seen in the figure Coldplay(red) and Metallica (blue) have popular albums. However, I would say that the figure shows that Coldplay has more popular albums. 
+
+
+```{r}
 #popularity of album plot, I removed the remastered and deluxe albums
 i <- direct_comparison_album_pop_plot(combined_df)
 i
 ```
 
-
-#Coldplay Analysis
-Look at how tempo changes when sung live compared to when in studio. 
-Maybe add a picture of coldplay concert.
-Look at popularity of albums. Maybe average tempo of album?
-
-#Metallica Analysis
-Look at how tempo changes when sung live compared to when in studio or demo. 
-Maybe add a picture of a metallica poster.
-
 #Broader Context Analysis
-Integrating the spotify file and doing more analysis. 
-Maybe compare metallica and coldplay with other artists in their genre?
+For this section I integrate the spotify file and do a more broad analysis. 
 
 ```{r}
 spotify_avg_duration <- aggregate(duration_ms ~ year, spotify_df, mean)
@@ -188,7 +190,7 @@ metallica_avg_duration_min <- metallica_avg_duration %>%
 coldplay_avg_duration_min <- coldplay_avg_duration %>% 
     mutate(minutes = duration/60)
 
-#combined_df <- bind_rows(coldplay_direct_compare %>% mutate(band = "coldplay"), metallica_direct_compare %>% mutate(band = "metallica"))
+
 avg_duration_df <- bind_rows(spotify_avg_duration_min %>% mutate(artist = "Spotify Music") %>% mutate(Year= year), 
                              metallica_avg_duration_min %>%  mutate(artist = "Metallica"), 
                              coldplay_avg_duration_min %>%  mutate(artist = "Coldplay"))
@@ -199,29 +201,7 @@ k <- song_duration_compare(avg_duration_df)
 k
 
 ```
+The Figure shows the duration of songs for Coldplay, Metallica and the broader Spotify Music. Coldplay has a right skewed distribution meaning that most of their songs are shorter than Metallicas (as seen on figure). Metallica has quite a normal distribution, with majority of their songs being around 5-6 minutes. Most of the broader Spotify songs peak around 4 minutes which is similar to Coldplay's song duration. 
 
-
-#  Methodology \label{Meth}
-
-## Subsection
-Ideally do not overuse subsections. It equates to bad writing.^[This is an example of a footnote by the way. Something that should also not be overused.]
-
-
-
-FYI - R also recently introduced the gt package, which is worthwhile exploring too.
-
-# Lists
-
-To add lists, simply using the following notation
-
-* This is really simple
-
-    + Just note the spaces here - writing in R you have to sometimes be pedantic about spaces...
-
-* Note that Rmarkdown notation removes the pain of defining \LaTeX environments!
-
-# Conclusion
-
-I hope you find this template useful. Remember, stackoverflow is your friend - use it to find answers to questions. Feel free to write me a mail if you have any questions regarding the use of this package. To cite this package, simply type citation("Texevier") in Rstudio to get the citation for @Texevier (Note that uncited references in your bibtex file will not be included in References).
 
 

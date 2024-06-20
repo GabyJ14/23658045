@@ -24,12 +24,99 @@ Texevier::create_template(directory = "C:/Users/gabyd/Desktop/DataScience/Exam/2
 
 
 #Question 2
-
+For Question 2 I made direct comparisons between Coldplay and Metallica's tempo and energy over the years. I looked at the popularity of their albums as well as the duration of their songs compared to the broad Spotify song data that was provided. 
 
 ```{r}
 Texevier::create_template(directory = "C:/Users/gabyd/Desktop/DataScience/Exam/23658045", template_name = "Question2")
 ```
+The setup :
 
+```{r}
+library(tidyverse)
+pacman::p_load(purr)
+pacman::p_load(lubridate)
+coldplay_data <- read.csv("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/data/Coldplay_vs_Metallica/Coldplay.csv")
+metallica_data <- read.csv("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/data/Coldplay_vs_Metallica/metallica.csv")
+definitions <- read_lines("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/data/Coldplay_vs_Metallica/Definitions.txt")
+spotify_df <- read_rds("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/data/Coldplay_vs_Metallica/Broader_Spotify_Info.rds")
+
+#some columns is not names the same
+colnames(metallica_data)[2] = "album_name"
+colnames(metallica_data)[3] ="duration"
+
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/code/direct_comparison_album_pop_plot.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/code/direct_comparison_energy_plot.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/code/direct_comparison_tempo_plot.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question2/code/song_duration_plot.R")
+```
+I then filtered out the live performances for direct comparisons. 
+
+```{r}
+coldplay_direct_compare <- coldplay_data %>% 
+    filter(!grepl("Live", name))
+metallica_direct_compare <- metallica_data %>% 
+    filter(!grepl("Live", name)) %>% filter(!grepl("Live", album_name))
+```
+I then combined the data and added a year variable using lubridate.
+
+```{r}
+#combine data
+combined_df <- bind_rows(coldplay_direct_compare %>% mutate(band = "coldplay"), metallica_direct_compare %>% mutate(band = "metallica")) 
+
+#adding a year variable from release data using lubridate package
+combined_df <- combined_df %>% 
+    mutate(Year = year(ymd(release_date)))
+```
+
+For the analysis, I first started with a direct comparison between Coldplay and Metallica. I first made a tempo plot to show the changes in tempo over the years for both bands. 
+
+```{r}
+#tempo plot
+g <- direct_comparison_tempo_plot(combined_df)
+g
+```
+I did the same for energy.
+
+```{r}
+#energy plot
+h <- direct_comparison_energy_plot(combined_df)
+h
+```
+For the last comparison between the two bands, I looked at the popularity of their albums over the years. I did all of the data wrangling in a function. I removed the 'Remasteres' and 'Deluxe' albums since I do not think that those albums should be takem into account when comparing the popularity of albums. 
+*This plot was my take on the plot that was provided in the assignment. 
+
+
+```{r}
+#popularity of album plot, I removed the remastered and deluxe albums
+i <- direct_comparison_album_pop_plot(combined_df)
+i
+```
+To see the difference between Coldplay, Metallica and the broader music industry, I did a comparison using the duration of songs. 
+
+
+```{r}
+spotify_avg_duration <- aggregate(duration_ms ~ year, spotify_df, mean)
+metallica_avg_duration <- aggregate(duration ~ Year, combined_df[combined_df$band == "metallica", ], mean)
+coldplay_avg_duration <- aggregate(duration ~ Year, combined_df[combined_df$band == "coldplay", ], mean)
+
+spotify_avg_duration_min <- spotify_avg_duration %>% 
+    mutate(minutes = duration_ms/60000)
+metallica_avg_duration_min <- metallica_avg_duration %>% 
+    mutate(minutes = duration/60000)
+coldplay_avg_duration_min <- coldplay_avg_duration %>% 
+    mutate(minutes = duration/60)
+
+avg_duration_df <- bind_rows(spotify_avg_duration_min %>% mutate(artist = "Spotify Music") %>% mutate(Year= year), 
+                             metallica_avg_duration_min %>%  mutate(artist = "Metallica"), 
+                             coldplay_avg_duration_min %>%  mutate(artist = "Coldplay"))
+
+
+#plot 
+k <- song_duration_compare(avg_duration_df)
+k
+
+
+```
 
 #Question 3: Russia - Ukraine Conflict
 Some insights into the Russia-Ukraine war and specifically wheter countries inside the European Union has done enough to stem the tide of the war will be given in this section. I will provide a summary of a few key bullers to discuss around the topic of country aid. This will provide viewers with intuitive and interesting insights into which countries are giving to the Ukranian cause and which aren't. 
