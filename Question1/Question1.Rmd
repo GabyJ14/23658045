@@ -85,7 +85,7 @@ output:
     fig_width: 3.5 # Adjust default figure sizes. This can also be done in the chunks of the text.
     fig_height: 3.5
 abstract: |
-  Write short abstract here.
+  The US Baby Names dataset is analysed in this report. 
 ---
 
 <!-- First: Set your default preferences for chunk options: -->
@@ -98,8 +98,6 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width 
 # warning and message = FALSE implies ugly messages and warnings are removed from your pdf.
 # These should be picked up when you execute the command chunks (code sections below) in your rmd, not printed in your paper!
 
-# Lets load in example data, and see how this can be stored and later called from your 'data' folder.
-if(!require("tidyverse")) install.packages("tidyverse")
 library(tidyverse)
 pacman::p_load(ggthemes)
 #data prep and load
@@ -108,6 +106,13 @@ charts <- read_rds("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/d
 HBO_titles <- read_rds("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/data/US_Baby_names/HBO_titles.rds")
 HBO_credits <- read_rds("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/data/US_Baby_names/HBO_credits.rds")
 
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/code/actors_influence_b.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/code/actors_influence_g.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/code/b_top_names_history.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/code/g_top_names_history.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/code/name_trend.R")
+#source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/code/spearman.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/code/top_10_plot.R")
 
 ```
 
@@ -117,8 +122,7 @@ HBO_credits <- read_rds("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Questi
 <!-- ############################## -->
 
 # Introduction \label{Introduction}
-Write a short introduction here. 
-
+The US Baby Names dataset is analysed in this report. Exploratory analysis is firstly done to see what is in the data. A time-series analysis is then done followed by an Influencer analysis. 
 
 #Exploratory Data Analysis
 In this section I examine the overall trends in baby names over the years. 
@@ -139,16 +143,20 @@ g_top <- g_top_names_history(girls_df)
 b_top <- b_top_names_history(boys_df)
  
 
-p <- top_10_plot(g_top, "Top 10 Girls Names over History")
-p
-h <- top_10_plot(b_top, "Top 10 Boys Names over History")   
-h
-#can add lowest names
-
 ```
 
-Can maybe show the map of the states here with most likes name over the years. 
 
+```{r}
+p <- top_10_plot(g_top, "Top 10 Girls Names over History")
+p
+```
+The figure above shows that Mary was the most popular name across history for girls. 
+
+```{r}
+h <- top_10_plot(b_top, "Top 10 Boys Names over History")   
+h
+```
+The figure above that shows the top 10 names for boys over history show that James is the most popular. John and Robert is close 2nd and 3rd now. It is interesting that the top names for boys are more closer to each other than for girls. 
 
 #Time-Series Analysis
 In this section the Spearman rank correlation of the top 25 baby names from each year with the following three years. This rank correlation is then used to analyse the persistence of name popularity over decades, especially focussing on 1990's and onwards. 
@@ -160,19 +168,26 @@ In this section the Spearman rank correlation of the top 25 baby names from each
 
 ```
 
-
+\newpage
 
 #Influence Analysis
 In this section I will identify names with significant popularity spikes and correlate them with cultural events such as tv shows, celebrities, artists and songs. 
+I looked at the actors from the most popular tv shows in the 90's.
 
-First I do music. I look at which actors were famous and see how their names performed over the years.
 ```{r}
 lgirls <- actors_influence_g(top_national_baby, HBO_credits, HBO_titles)
 lgirls
+```
+This figure shows there was a spike for most of the actors' names in the late 1990's. However, the influence of their names did not persist. 
+
+```{r}
+
 lboys <- actors_influence_b(top_national_baby, HBO_credits, HBO_titles)
 lboys
 
 ```
+Once again the plot for the boys is much different to the one for the girls. The figure above shows that there was not really a spike for any of the actors' names. 
+
 Now I look at how the names performed of some interesting things that happen. 
 
 A Royal Look at Names:
@@ -182,84 +197,6 @@ q <- name_trend(girls_df, "Elizabeth", "Trend of the Name Elizabeth Over the Yea
 q
 ```
 
-
-#Final remarks
-
-
-#Conclusion
-
-
-```{r Figure1,  warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure1}", fig.ext = 'png', fig.height = 3, fig.width = 6}
-
-
-
-```
-
-
-
-```{r Figure2, warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure2}", fig.height = 3, fig.width = 6, dev = 'png'}
-
-ExampleData <- read_rds( "data/Example_data.rds")
-
-source("code/Example_Plot_Scatter.R") # Load a function from your 'code' folder. This e.g. plots scatters to your own preferences.
-source( "code/Data_Create.R") #
-
-ExampleData <- Data_Create(N = 100) # Same as the ExampleData loaded above - this is just a function to create the stored data.
-
-g <- Example_Plot_Scatter(DataInput = ExampleData,
-                          X = "Height_Score",
-                          Y = "Weight_Score",
-                          Z = "Agility_Score",
-                          Theme = theme_bw(), # run ?ggthemes for other themes.
-                          Title = "", # I prefer to use the caption set above.
-                          Ylab = "Height",
-                          Xlab = "Lenght",
-                          LegendTitle = "Agility",
-                          TitleSize = 10,
-                          LabSize = 10)
-
-g
-
-
-```
-
-To reference the plot above, add a ``\\label'' after the caption in the chunk heading, as done above. Then reference the plot as such: As can be seen, Figures \ref{Figure1}  and \ref{Figure2} are excellent, with Figure \ref{Figure2} being particularly aesthetically pleasing due to its device setting of Tikz. The nice thing now is that it correctly numbers all your figures (and sections or tables) and will update if it moves. The links are also dynamic.
-
-
-
-
-# Including an external plot
-
-You can also include plots produced outside of your Rmarkdown file using the package *knitr*
-
-See below chunk:
-
-```{r, out.width = "205px", fig.cap=figures("Some Figure"), eval = F}
-
-knitr::include_graphics("YourFigureLocation/Logo.png")
-
-```
-
-
-FYI - R also recently introduced the gt package, which is worthwhile exploring too.
-
-# Lists
-
-To add lists, simply using the following notation
-
-* This is really simple
-
-    + Just note the spaces here - writing in R you have to sometimes be pedantic about spaces...
-
-* Note that Rmarkdown notation removes the pain of defining \LaTeX environments!
-
-# Conclusion
-
-
-<!-- Make title of bibliography here: -->
-<!-- \newpage -->
-
-\newpage
 
 
 

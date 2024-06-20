@@ -17,9 +17,78 @@ list.files('Question3/code/', full.names = T, recursive = T) %>% as.list() %>% w
 
 #Question 1
 
+In this section I The US Baby Names dataset is analysed. Exploratory analysis is firstly done to see what is in the data. A time-series analysis is then done followed by an Influencer analysis.
+
+
+```{r}
+library(tidyverse)
+pacman::p_load(ggthemes)
+#data prep and load
+baby_names <- read_rds("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/data/US_Baby_names/Baby_Names_By_US_State.rds")
+charts <- read_rds("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/data/US_Baby_names/charts.rds")
+HBO_titles <- read_rds("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/data/US_Baby_names/HBO_titles.rds")
+HBO_credits <- read_rds("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/data/US_Baby_names/HBO_credits.rds")
+
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/code/actors_influence_b.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/code/actors_influence_g.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/code/b_top_names_history.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/code/g_top_names_history.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/code/name_trend.R")
+#source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/code/spearman.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/code/top_10_plot.R")
+```
 
 ```{r}
 Texevier::create_template(directory = "C:/Users/gabyd/Desktop/DataScience/Exam/23658045", template_name = "Question1")
+```
+
+This code chunk summarises the data and plots the top baby names for each gender. 
+```{r}
+top_national_baby <- baby_names %>% 
+    group_by(Name, Year, Gender) %>% 
+    summarise(Total_Count_year = sum(Count)) %>% 
+    arrange(Year, desc(Total_Count_year)) 
+ 
+girls_df<- top_national_baby %>% 
+    filter(Gender == "F")
+
+boys_df <- top_national_baby %>% 
+    filter(Gender == "M")
+
+g_top <- g_top_names_history(girls_df)
+b_top <- b_top_names_history(boys_df)
+ 
+#girls plot
+p <- top_10_plot(g_top, "Top 10 Girls Names over History")
+p
+
+```
+
+
+
+```{r}
+#boys plot
+h <- top_10_plot(b_top, "Top 10 Boys Names over History")   
+h
+```
+The two graphs above show the top 10 names over History.
+
+I had some issues with the time series analysis. I attempted the spearman correlation rank, but something was wrong in the code. I still included the function I attempted the code in. 
+
+The influence analysis, I analysed the HBO datasets to see if actors had an influence on baby names. I only wanted to do a specific subset of tv shows so I decided on tv shows in 1990-1999. I only looked at tv show actors for the top 5 tv shows in that period. I then counted how many babies were named after these actors from the period 1990-2010. I decided on that period, to see if these influences persisted. This was all done in a function and was done seperately for boys and girls. 
+
+For girls
+```{r}
+lgirls <- actors_influence_g(top_national_baby, HBO_credits, HBO_titles)
+lgirls
+```
+For boys:
+
+
+```{r}
+lboys <- actors_influence_b(top_national_baby, HBO_credits, HBO_titles)
+lboys
+
 ```
 
 
