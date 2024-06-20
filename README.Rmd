@@ -5,6 +5,7 @@ title: "README"
 date: "2024-06-18"
 ---
 #Purpose
+Gaby Jacobs 23658045
 This is the document where I will be discussing what I did for each question for the Data Science Practical Exam.
 *Please Note :) I am partially colour blind and work with a colour blind scheme package in R. This may lead to my plots having strange colours (as pointed out by my mom). I don't think the colour blind scheme will interfere with the plots that I made in this prac, but I just wanted to inform you, just in case. 
 
@@ -38,9 +39,6 @@ source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/code/name_tre
 source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question1/code/top_10_plot.R")
 ```
 
-```{r}
-Texevier::create_template(directory = "C:/Users/gabyd/Desktop/DataScience/Exam/23658045", template_name = "Question1")
-```
 
 This code chunk summarises the data and plots the top baby names for each gender. 
 ```{r}
@@ -95,9 +93,6 @@ lboys
 #Question 2
 For Question 2 I made direct comparisons between Coldplay and Metallica's tempo and energy over the years. I looked at the popularity of their albums as well as the duration of their songs compared to the broad Spotify song data that was provided. 
 
-```{r}
-Texevier::create_template(directory = "C:/Users/gabyd/Desktop/DataScience/Exam/23658045", template_name = "Question2")
-```
 The setup :
 
 ```{r}
@@ -191,9 +186,7 @@ k
 Some insights into the Russia-Ukraine war and specifically wheter countries inside the European Union has done enough to stem the tide of the war will be given in this section. I will provide a summary of a few key bullers to discuss around the topic of country aid. This will provide viewers with intuitive and interesting insights into which countries are giving to the Ukranian cause and which aren't. 
 
 I start by creating a folder for Questions 3. 
-```{r}
-Texevier::create_template(directory = "C:/Users/gabyd/Desktop/DataScience/Exam/23658045", template_name = "Question3")
-```
+
 I give insight about the Ukraine-Russia conflict in the introduction. First, I show the total bilateral contribution by country. This figure shows that the United Kingdom have the most bilateral allocations.
 
 ```{r}
@@ -213,10 +206,6 @@ g
 
 #Question 4
 I start by creating a folder for Question 4. 
-```{r}
-Texevier::create_template(directory = "C:/Users/gabyd/Desktop/DataScience/Exam/23658045", template_name = "Question4")
-
-```
 A brief introduction to the question is then given. I load the data and then adjust for the team sports that get more than one medal, but only one medal is counted for the country. This is done in a function, where I sum over the medal counter while grouping over the other variables. If the medal counter is more than one, it creates a boolean indicating that it is a team sport, or not. Thereafter, the medal counter is set to 1. 
 
 ```{r}
@@ -225,7 +214,14 @@ summer_data <- read_rds("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Questi
 winter_data <- read_rds("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/data/olympics/winter.rds")
 GDP_data <- read_rds("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/data/olympics/GDP.rds")
 
-
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/code/medals_per_year_country.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/code/adj_data_team.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/code/compare_plot.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/code/medals_per_country.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/code/merged_medals_gdp.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/code/top_countries_plot.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/code/plot_sport.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/code/football_map_world.R")
 #adjusting the data for team sports
 summer_df <- adj_data_team(summer_data)
 winter_df <- adj_data_team(winter_data)
@@ -317,11 +313,6 @@ map_plot
 In this section I share my views on local inflation by constructing a Braaibroodjie index over a three-year period. The index contains data for white bread, cheddar, margarine, tomatoes, onions, salt and chutney. 
 
 
-```{r}
-
-Texevier::create_template(directory = "C:/Users/gabyd/Desktop/DataScience/Exam/23658045", template_name = "Question5")
-
-```
 
 
 
