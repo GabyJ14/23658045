@@ -165,10 +165,23 @@ In this section the Spearman rank correlation of the top 25 baby names from each
 #Influence Analysis
 In this section I will identify names with significant popularity spikes and correlate them with cultural events such as tv shows, celebrities, artists and songs. 
 
-
+First I do music. I look at which actors were famous and see how their names performed over the years.
 ```{r}
+lgirls <- actors_influence_g(top_national_baby, HBO_credits, HBO_titles)
+lgirls
+lboys <- actors_influence_b(top_national_baby, HBO_credits, HBO_titles)
+lboys
 
 ```
+Now I look at how the names performed of some interesting things that happen. 
+
+A Royal Look at Names:
+
+```{r}
+q <- name_trend(girls_df, "Elizabeth", "Trend of the Name Elizabeth Over the Years")  
+q
+```
+
 
 #Final remarks
 
