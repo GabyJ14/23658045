@@ -9,7 +9,7 @@ top_countries_plot <- function(top_countries, Title)
         labs(title = Title,
              x = "Year", y = "Total Team Medals") +
         theme_minimal() +
-        theme(legend.position = "topleft") +
+        theme(legend.position = "bottom") +
        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
    test_plot
 

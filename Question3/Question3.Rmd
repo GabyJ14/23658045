@@ -25,7 +25,7 @@ Thesis_FP: FALSE
 # --------- Front Page
 # Comment: ----- Follow this pattern for up to 5 authors
 AddTitle: TRUE # Use FALSE when submitting to peer reviewed platform. This will remove author names.
-Author1: "Gaby Jacobs^[__Contributions:__  \\newline _The authors would like to thank no institution for money donated to this project. Thank you sincerely._]"  # First Author - note the thanks message displayed as an italic footnote of first page.
+Author1: "Gaby Jacobs"  # First Author - note the thanks message displayed as an italic footnote of first page.
 Ref1: "Stellenbosch University, Stellenbosch, South Africa" # First Author's Affiliation
 Email1: "23658045@sun.ac.za" # First Author's Email address
 
@@ -84,7 +84,7 @@ output:
     fig_width: 3.5 # Adjust default figure sizes. This can also be done in the chunks of the text.
     fig_height: 3.5
 abstract: |
-  Remember to write a short summary about question.
+  The topic of country-aid towards Ukraine is briefly discussed with focus on countries inside the EU.
 ---
 
 <!-- First: Set your default preferences for chunk options: -->
@@ -110,8 +110,13 @@ names(alloc)[5] <- 'mil_alloc'
 names(alloc)[6] <- 'tot_bil_alloc'
 names(alloc)[7] <- 'EU_share_alloc'
 colnames(alloc)
-
-
+#sourcing function
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question3/code/allocation_map.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question3/code/Contribution_by_country_plot.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question3/code/nonEU_vs_EU_plot.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question3/code/tot_fin_all_country.R")
+#source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question3/code/world_allocation_map.R")
+#source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question3/code/allocation_map.R")
 
 ```
 
@@ -143,17 +148,19 @@ The Financial Commitments dataset variables:
         +Financial commitments with military purposes:
         +Total bilateral commitments of short term: Commitments with short-term horizon. 
 
-# Data and Methodology
+# Data Analysis
 In this section I will visually show who is giving aid to Ukraine and who is not. Here I will show all plots.
 The plots and any other data wrangling will be done in seperate functions. 
-First, I show the total bilateral contribution by country
-
+First, I show the total bilateral contribution by country. This figure shows that the United Kingdom have the most bilateral allocations. 
 
 ```{r Figure 1,  warning =  FALSE, fig.align = 'center', fig.cap = "Total Bilateral Allocations by Country \\label{Figure1}", fig.ext = 'png', fig.height = 3, fig.width = 6}
 g <- 
     Contribution_by_country_plot(alloc)
 g
 ```
+
+
+
 
 Here, I show the contribution of EU members and non-EU members. Using the map package I showcase where the countries are that are giving aid to Ukraine. 
 
@@ -185,10 +192,11 @@ ggplot(data = europe, aes(x = long, y = lat, group = group)) +
   theme_void() 
 library(sf)
 
- world %>% 
-  # join map dataframe with values tabl
- left_join(europe, by = join_by(region == Country)) %>% 
-ggplot(aes(long, lat)) +
+
+test_df <- world %>% 
+ left_join(europe, by = "region")
+test_plot <- 
+ggplot(test_df, aes(long, lat)) +
   geom_polygon(aes(group = group, fill = tot_bil_alloc), color ="grey80") +
   scale_fill_gradient(low = "white", 
                       high = "darkgreen", 
@@ -197,9 +205,9 @@ ggplot(aes(long, lat)) +
   coord_sf() +
   theme_bw()
 europe_map_data <- europe %>%
-  left_join(EU, by = join_by(region == Country))
+  left_join(EU, by = "region")
  
- ggplot(europe_map_data) +
+plot_2<- ggplot(europe_map_data) +
   geom_polygon(aes(x = long, y = lat, group = group, fill = tot_bil_alloc), color = "grey80") +
   scale_fill_gradient(low = "white", high = "darkgreen", limits = c(0, 35), na.value = "grey99") +
   coord_sf() +
@@ -215,51 +223,12 @@ europe_map_data <- europe %>%
 
 ```
 
-To make your graphs look extra nice in latex world, you could use Tikz device. Replace dev - 'png' with 'tikz' in the chunk below. Notice this makes the build time longer and produces extra tex files - so if you are comfortable with this, set your device to Tikz and try it out:
-
-```{r Figure2, warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure2}", fig.height = 3, fig.width = 6, dev = 'png'}
-
-ExampleData <- read_rds( "data/Example_data.rds")
-
-source("code/Example_Plot_Scatter.R") # Load a function from your 'code' folder. This e.g. plots scatters to your own preferences.
-source( "code/Data_Create.R") #
-
-ExampleData <- Data_Create(N = 100) # Same as the ExampleData loaded above - this is just a function to create the stored data.
-
-g <- Example_Plot_Scatter(DataInput = ExampleData,
-                          X = "Height_Score",
-                          Y = "Weight_Score",
-                          Z = "Agility_Score",
-                          Theme = theme_bw(), # run ?ggthemes for other themes.
-                          Title = "", # I prefer to use the caption set above.
-                          Ylab = "Height",
-                          Xlab = "Lenght",
-                          LegendTitle = "Agility",
-                          TitleSize = 10,
-                          LabSize = 10)
-
-g
-
-# Although the functions above are really simple, the principle is simple: containing calculations and data wrangling in their own functions will make this template much cleaner and more manageable.
-# When you start working, delete these meaningless functions and replace with your own...
-
-```
-
-To reference the plot above, add a ``\\label'' after the caption in the chunk heading, as done above. Then reference the plot as such: As can be seen, Figures \ref{Figure1}  and \ref{Figure2} are excellent, with Figure \ref{Figure2} being particularly aesthetically pleasing due to its device setting of Tikz. The nice thing now is that it correctly numbers all your figures (and sections or tables) and will update if it moves. The links are also dynamic.
-
-# Lists
-
-To add lists, simply using the following notation
-
-* This is really simple
-
-    + Just note the spaces here - writing in R you have to sometimes be pedantic about spaces...
-
-* Note that Rmarkdown notation removes the pain of defining \LaTeX environments!
+#Different types of aid
+Show a stacked bar graph with the different types of aid the EU members are giving. 
 
 # Conclusion
 
-I hope you find this template useful. Remember, stackoverflow is your friend - use it to find answers to questions. Feel free to write me a mail if you have any questions regarding the use of this package. To cite this package, simply type citation("Texevier") in Rstudio to get the citation for @Texevier (Note that uncited references in your bibtex file will not be included in References).
+
 
 
 \newpage

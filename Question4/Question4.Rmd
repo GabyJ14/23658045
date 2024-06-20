@@ -26,8 +26,8 @@ Thesis_FP: FALSE
 # Comment: ----- Follow this pattern for up to 5 authors
 AddTitle: TRUE # Use FALSE when submitting to peer reviewed platform. This will remove author names.
 Author1: "Gaby Jacobs"  # First Author - note the thanks message displayed as an italic footnote of first page.
-Ref1: "Some Institution, Cape Town, South Africa" # First Author's Affiliation
-Email1: "nfkatzke\\@gmail.com" # First Author's Email address
+Ref1: "Stellenbosch University, South Africa" # First Author's Affiliation
+Email1: "23658045@sun.ac.za" # First Author's Email address
 
 CorrespAuthor_1: TRUE  # If corresponding author is author 3, e.g., use CorrespAuthor_3: TRUE
 
@@ -84,7 +84,7 @@ output:
     fig_width: 3.5 # Adjust default figure sizes. This can also be done in the chunks of the text.
     fig_height: 3.5
 abstract: |
-  Remember to write an abstract here.
+  This is the answer to Question 4 of the prac exam. I will share some interesting insight into the Olympics data with focus on India. 
 ---
 
 <!-- First: Set your default preferences for chunk options: -->
@@ -95,9 +95,19 @@ abstract: |
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 5, fig.pos="H", fig.pos = 'H')
 
 # Lets load in example data, and see how this can be stored and later called from your 'data' folder.
-if(!require("tidyverse")) install.packages("tidyverse")
+#if(!require("tidyverse")) install.packages("tidyverse")
 library(tidyverse)
-
+library(ggplot2)
+library(dplyr)
+list.files('Question4/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/code/medals_per_year_country.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/code/adj_data_team.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/code/compare_plot.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/code/medals_per_country.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/code/merged_medals_gdp.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/code/top_countries_plot.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/code/plot_sport.R")
+source("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/code/football_map_world.R")
 ```
 
 
@@ -135,6 +145,7 @@ To answer this question, I firstly add the medals for each country then divide t
 
 
 ```{r}
+
 summer_medals_country_df <- medals_per_country(summer_df) #this is now a data frame with just the country and total medals per country
 #merged dataset with medals and gdp
 merged_medals_gdp_df <- merged_medals_gdp(summer_medals_country_df, GDP_data) 
@@ -143,10 +154,6 @@ colnames(merged_medals_gdp_df)[6] = "GDP_per_Capita"
 
 merged_medals_gdp_df<- merged_medals_gdp_df %>% 
     mutate(medals_per_capita = team_medals/Population, medals_per_gdp = team_medals/ (GDP_per_Capita) * Population)
-
-
-
-
 #emerging markets: brazil, south africa, china, mexico, indonesia
 compare_countries <- c("BRA", "RSA", "CHN", "MEX", "INA", "IND", "ARG", "PER", "CHI")
 
@@ -155,6 +162,7 @@ g
 
 ```
 
+The plots above show that India doesn't do well compared to other emerging economies and selected South American countries. China outperforms the other countries except when population is taken into account. This is not surprising. 
 \newpage
 
 The next question that I will be answering is: Which countries have been most dominant in both Winter and Summer Olympics over
@@ -187,41 +195,59 @@ top_5_year_winter_df <- win_top_df %>%
 #plot time series for both summer and winter
 g<- top_countries_plot(top_5_year_winter_df, Title = "Top 5 Countries in Winter Olympics Over Time")
 g
+
+
+```
+
+```{r Figure3, warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure2}", fig.height = 3, fig.width = 6, dev = 'png'}
 h <- top_countries_plot(top_5_year_summer_df, Title = "Top 5 Countries in Summer Olympics Over Time")
 h
+```
+Figure 2 and 3 show the dominant countries over time. Explain more
+
+\newpage
+Question: Which countries best punch above their weight when it comes to winning medals (however
+you define this)?
+I interpreted this question as realistic as possible. I decided to look at which countries perform well in boxing. 
+
+
+
+```{r}
+#filter for boxing
+boxing_df <- summer_data %>% 
+    filter(Sport == "Boxing")
+
+boxing <- medals_per_country(boxing_df) %>% 
+    arrange(desc(team_medals)) %>% 
+    head(20)
+
+w <- plot_sport(boxing, "Total Medals for Boxing")
+w
 
 ```
 
+The Figure above shows that the USA has outperformed all other countries over the years. In second place, Cuba, also performed well. Especially since Cuba is a small country, Cuba is as big as the state of Tennessee in the USA. For that reason, I would say that Cuba definitely punches above their weight. 
+
+```{r}
+knitr::include_graphics("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/punch.jpg")
+```
+
+\newpage
+Question: Which is your personal favourite event at the Olympics? Show some interesting analyses
+on past winners / countries related to your chosen event.
+
+My favourite is football. I have always enjoyed watching Brazil play football. Therefore for this question I will be looking at Brazil's performance in football over the years. 
 
 
-
-# Including an external plot
-
-You can also include plots produced outside of your Rmarkdown file using the package *knitr*
-
-See below chunk:
-
-```{r, out.width = "205px", fig.cap=figures("Some Figure"), eval = F}
-
-knitr::include_graphics("YourFigureLocation/Logo.png")
+```{r}
+map_plot <- football_map_world(summer_df, "Countries That Have Won Medals for Football at the Summer Olympics")
+map_plot
 
 ```
 
-
-FYI - R also recently introduced the gt package, which is worthwhile exploring too.
-
-# Lists
-
-To add lists, simply using the following notation
-
-* This is really simple
-
-    + Just note the spaces here - writing in R you have to sometimes be pedantic about spaces...
-
-* Note that Rmarkdown notation removes the pain of defining \LaTeX environments!
+Figure 4 shows the countries that have won medals for football at the Summer Olympics. Interesting to note that not a lot of African countries have won medals at the Olympics. Unsurprisingly, many European countries, Brazil and Argentina have won medals. This is expected since these countries also perform well in the Fifa World Cup and other international tournaments. 
 
 # Conclusion
-
-I hope you find this template useful. Remember, stackoverflow is your friend - use it to find answers to questions. Feel free to write me a mail if you have any questions regarding the use of this package. To cite this package, simply type citation("Texevier") in Rstudio to get the citation for @Texevier (Note that uncited references in your bibtex file will not be included in References).
+In this summary, I answered the questions that were asked and used some creative plots to analyse the Olympics data. 
 
 

@@ -5,8 +5,15 @@ title: "README"
 date: "2024-06-18"
 ---
 #Purpose
-This is the document where I will be discussing what I did for each question for the Data Science Practical Exam. 
+This is the document where I will be discussing what I did for each question for the Data Science Practical Exam.
+*Please Note :) I am partially colour blind and work with a colour blind scheme package in R. This may lead to my plots having strange colours (as pointed out by my mom). I don't think the colour blind scheme will interfere with the plots that I made in this prac, but I just wanted to inform you, just in case. 
 
+
+```{r}
+library(pacman)
+p_load(tidyverse, lubridate)
+list.files('Question3/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+```
 
 #Question 1
 
@@ -28,19 +35,127 @@ Texevier::create_template(directory = "C:/Users/gabyd/Desktop/DataScience/Exam/2
 Some insights into the Russia-Ukraine war and specifically wheter countries inside the European Union has done enough to stem the tide of the war will be given in this section. I will provide a summary of a few key bullers to discuss around the topic of country aid. This will provide viewers with intuitive and interesting insights into which countries are giving to the Ukranian cause and which aren't. 
 
 I start by creating a folder for Questions 3. 
-
-
 ```{r}
 Texevier::create_template(directory = "C:/Users/gabyd/Desktop/DataScience/Exam/23658045", template_name = "Question3")
 ```
+I give insight about the Ukraine-Russia conflict in the introduction. First, I show the total bilateral contribution by country. This figure shows that the United Kingdom have the most bilateral allocations.
+
+```{r}
+alloc <- read.csv("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question3/data/Ukraine_Aid/Financial Allocations.csv")
+commit <- read.csv("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question3/data/Ukraine_Aid/Financial Commitments.csv")
+names(alloc)[2] <- 'EU'
+names(alloc)[3] <- 'fin_alloc'
+names(alloc)[4] <- 'hum_alloc'
+names(alloc)[5] <- 'mil_alloc'
+names(alloc)[6] <- 'tot_bil_alloc'
+names(alloc)[7] <- 'EU_share_alloc'
+g <- 
+    Contribution_by_country_plot(alloc)
+g
+```
+
+
 #Question 4
 I start by creating a folder for Question 4. 
-
-
 ```{r}
 Texevier::create_template(directory = "C:/Users/gabyd/Desktop/DataScience/Exam/23658045", template_name = "Question4")
 
 ```
+A brief introduction to the question is then given. I load the data and then adjust for the team sports that get more than one medal, but only one medal is counted for the country. This is done in a function, where I sum over the medal counter while grouping over the other variables. If the medal counter is more than one, it creates a boolean indicating that it is a team sport, or not. Thereafter, the medal counter is set to 1. 
+
+```{r}
+#loading the data
+summer_data <- read_rds("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/data/olympics/summer.rds")
+winter_data <- read_rds("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/data/olympics/winter.rds")
+GDP_data <- read_rds("C:/Users/gabyd/Desktop/DataScience/Exam/23658045/Question4/data/olympics/GDP.rds")
+
+
+#adjusting the data for team sports
+summer_df <- adj_data_team(summer_data)
+winter_df <- adj_data_team(winter_data)
+```
+Next I compare India's performance with other emerging economies and a selected few South American countries. I do this by first creating a dataframe with just the country and medals per country. I merge this dataframe with the GDP dataframe and create a variable for medals per capita to make comparisons easier. I choose the emerging markets and South American countries. Finally, the function 'compare plot' is used to show the past performance of the chosen countries, the medals per Capita and medals per GDP. All three plots are shown on one picture.
+
+
+```{r}
+summer_medals_country_df <- medals_per_country(summer_df) #this is now a data frame with just the country and total medals per country
+#merged dataset with medals and gdp
+merged_medals_gdp_df <- merged_medals_gdp(summer_medals_country_df, GDP_data) 
+colnames(merged_medals_gdp_df)[6] = "GDP_per_Capita"
+
+
+merged_medals_gdp_df<- merged_medals_gdp_df %>% 
+    mutate(medals_per_capita = team_medals/Population, medals_per_gdp = team_medals/ (GDP_per_Capita) * Population)
+#emerging markets: brazil, south africa, china, mexico, indonesia, add south american countries too
+compare_countries <- c("BRA", "RSA", "CHN", "MEX", "INA", "IND", "ARG", "PER", "CHI")
+
+g<- compare_plot(merged_medals_gdp_df, compare_countries)
+g
+```
+The next question I answer is which countries have been the most dominant in both winter and summer olympics. I do this by firstly summarising the amount of medals won by year and country. I arrange the dataframes to make it possible to take the first 5 observations as the best performing countries. I do this seperately for winter and summer olympics. A function is used to plot both the results for the summer and winter olympics. 
+
+
+```{r}
+#summarize medals by year and country
+sum_medals_year_country_df <- medals_per_year_country(summer_df)
+win_medals_year_country_df <- medals_per_year_country(winter_df)
+
+#top countries: summer
+sum_top_df <- sum_medals_year_country_df %>%  group_by(Year, Country) %>% 
+    arrange(Year, desc(team_medals)) %>% 
+    select(Year, Country, team_medals)
+top_5_year_summer_df <- sum_top_df %>%
+  group_by(Year) %>%
+  slice_max(order_by = team_medals, n = 5) %>%
+  ungroup()
+
+
+#top countries: winter
+win_top_df <- win_medals_year_country_df %>%  group_by(Year, Country) %>% 
+    arrange(Year, desc(team_medals)) %>% 
+    select(Year, Country, team_medals)
+top_5_year_winter_df <- win_top_df %>%
+  group_by(Year) %>%
+  slice_max(order_by = team_medals, n = 5) %>%
+  ungroup()
+
+#plot time series for both summer and winter
+g<- top_countries_plot(top_5_year_winter_df, Title = "Top 5 Countries in Winter Olympics Over Time")
+g
+
+```
+
+
+```{r}
+h <- top_countries_plot(top_5_year_summer_df, Title = "Top 5 Countries in Summer Olympics Over Time")
+h
+```
+The question: Which countries best punch above their weight when it comes to winning medals (however
+you define this)?
+I interpreted this question as realistic as possible. I decided to look at which countries perform well in boxing. 
+I first create a boxing dataframe by filtering the summer olympics data to just boxing data. I then use a function to plot the results. 
+
+```{r}
+#filter for boxing
+boxing_df <- summer_data %>% 
+    filter(Sport == "Boxing")
+
+boxing <- medals_per_country(boxing_df) %>% 
+    arrange(desc(team_medals)) %>% 
+    head(20)
+
+w <- plot_sport(boxing, "Total Medals for Boxing")
+w
+```
+For the last question in this section, I decided to plot which countries have won medals for football at the Summer Olympics using a world map. I downloaded the world map package. I used the following webpage (https://warin.ca/posts/rcourse-datavisualizationwithr-maps/) to understand how to create this map plot. I wanted to reference the webpage, but everytime I include a reference, the script didn't want to knit, so I decided to just mention it here. 
+All of the data wrangling and plotting for this map plot was done in a function. 
+
+
+```{r}
+map_plot <- football_map_world(summer_df, "Countries That Have Won Medals for Football at the Summer Olympics")
+map_plot
+```
+
 
 #Question 5: SQL
 In this section I share my views on local inflation by constructing a Braaibroodjie index over a three-year period. The index contains data for white bread, cheddar, margarine, tomatoes, onions, salt and chutney. 
