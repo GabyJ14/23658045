@@ -1,8 +1,7 @@
 ---
 title: "README"
- md_document:
-    variant: markdown_github
-date: "2024-06-18"
+output: html_document
+
 ---
 #Purpose
 Gaby Jacobs 23658045
@@ -311,14 +310,5 @@ map_plot
 
 #Question 5: SQL
 In this section I share my views on local inflation by constructing a Braaibroodjie index over a three-year period. The index contains data for white bread, cheddar, margarine, tomatoes, onions, salt and chutney. 
-
-
-
-
-
-
-
-
-
 
 
